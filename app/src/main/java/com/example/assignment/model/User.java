@@ -8,8 +8,7 @@ public class User {
     @Expose
     private String login;
 
-    public User() {
-    }
+
 
     @SerializedName("avatar_url")
     @Expose
@@ -18,6 +17,8 @@ public class User {
     @SerializedName("html_url")
     @Expose
     private String htmlUrl;
+    public User() {
+    }
 
     public User(String login, String avatarUrl, String htmlUrl) {
         this.login = login;

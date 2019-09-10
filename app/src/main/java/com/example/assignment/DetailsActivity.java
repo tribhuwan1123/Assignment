@@ -28,10 +28,11 @@ public class DetailsActivity extends AppCompatActivity {
         imageUrl=details.getStringExtra("avatarUrl");
         username=details.getStringExtra("login");
         gitLink=details.getStringExtra("htmlUrl");
-        Linkify.addLinks(git,Linkify.WEB_URLS);
+
 
         uName.setText(username);
         git.setText(gitLink);
+        Linkify.addLinks(git,Linkify.WEB_URLS);
         Glide.with(this).load(imageUrl).placeholder(R.mipmap.ic_launcher).into(userImage);
 
     }

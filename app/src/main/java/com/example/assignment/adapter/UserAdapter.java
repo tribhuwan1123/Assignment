@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -22,13 +24,18 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements Filterable {
 
     private List<User> userList;
+    private List<User> userListfull;
     Context context;
     public UserAdapter(Context context, List<User> userList){
         this.userList=userList;
         this.context=context;
+        userListfull= new ArrayList<>(userList);
+    }
+    public UserAdapter(){
+
     }
 
     @NonNull
@@ -51,6 +58,37 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return userList.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return userFilter;
+    }
+    private Filter userFilter= new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<User> filteredUser= new ArrayList<>();
+            if (charSequence==null||charSequence.length()==0){
+                filteredUser.addAll(userListfull);
+            }else{
+                String filterPattern=charSequence.toString().toLowerCase().trim();
+                for (User item:userListfull){
+                    if (item.getLogin().toLowerCase().contains(filterPattern)){
+                        filteredUser.add(item);
+                    }
+                }
+            }
+            FilterResults results=new FilterResults();
+            results.values=filteredUser;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            userList.clear();
+            userList.addAll((List)filterResults.values);
+            notifyDataSetChanged();
+
+        }
+    };
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profileImage;

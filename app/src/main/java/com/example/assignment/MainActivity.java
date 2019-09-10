@@ -1,6 +1,7 @@
 package com.example.assignment;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.lifecycle.ViewModelStore;
@@ -11,6 +12,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
     TextView internet;
     ProgressDialog progressDialog;
     SwipeRefreshLayout refreshLayout;
-    List<User> userList;
-    User user;
+    UserAdapter userAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                     List<User> users = response.body();
-                    rvUsers.setAdapter(new UserAdapter(getApplicationContext(), users));
+                    userAdapter=new UserAdapter(getApplicationContext(), users);
+                    rvUsers.setAdapter(userAdapter);
                     rvUsers.smoothScrollToPosition(0);
                     refreshLayout.setRefreshing(false);
                     progressDialog.hide();
@@ -91,5 +96,29 @@ public class MainActivity extends AppCompatActivity {
         rvUsers=(RecyclerView)findViewById(R.id.rvUsers);
         rvUsers.setLayoutManager(new LinearLayoutManager(this));
         rvUsers.smoothScrollToPosition(0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.search, menu);
+        MenuItem searchItem = menu.findItem(R.id.searchAction);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                userAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+
+        return true;
     }
 }
