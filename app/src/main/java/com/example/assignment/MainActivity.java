@@ -2,14 +2,10 @@ package com.example.assignment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.lifecycle.ViewModelStore;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,20 +17,15 @@ import android.widget.Toast;
 
 import com.example.assignment.adapter.UserAdapter;
 import com.example.assignment.model.User;
-import com.example.assignment.routes.Client;
 import com.example.assignment.routes.RetrofitClient;
 import com.example.assignment.routes.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,33 +71,6 @@ public class MainActivity extends AppCompatActivity {
                displayData(userList);
            }
        }));
-
-
-
-//        try {
-//            Client client = new Client();
-//            Service service = client.getClient().create(Service.class);
-//            Call<List<User>> call = service.getUsers();
-//            call.enqueue(new Callback<List<User>>() {
-//                @Override
-//                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-//                    List<User> users = response.body();
-//                    userAdapter=new UserAdapter(getApplicationContext(), users);
-//                    rvUsers.setAdapter(userAdapter);
-//                    rvUsers.smoothScrollToPosition(0);
-//                    refreshLayout.setRefreshing(false);
-//                    progressDialog.hide();
-//                }
-//
-//                @Override
-//                public void onFailure(Call<List<User>> call, Throwable t) {
-//
-//                }
-//            });
-//        }catch (Exception e){
-//            Toast.makeText(this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-//        }
-
     }
 
     private void displayData(List<User> userList) {

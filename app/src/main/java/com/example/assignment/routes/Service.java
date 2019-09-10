@@ -10,7 +10,6 @@ import retrofit2.http.GET;
 
 public interface Service {
     @GET("users")
-    //Call<List<User>> getUsers();
     Observable<List<User>> getUsers();
 
 
