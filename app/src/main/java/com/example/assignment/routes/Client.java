@@ -15,7 +15,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Client {
-    public static final String BASE_URL="https://api.github.com";
+        public static final String BASE_URL="https://api.github.com";
     public static Retrofit retrofit=null;
     private List<User> userList= new ArrayList<>();
     public static Retrofit getClient(){

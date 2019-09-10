@@ -6,17 +6,17 @@ import com.google.gson.annotations.SerializedName;
 public class User {
     @SerializedName("login")
     @Expose
-    private String login;
+    public String login;
 
 
 
     @SerializedName("avatar_url")
     @Expose
-    private String avatarUrl;
+    public String avatarUrl;
 
     @SerializedName("html_url")
     @Expose
-    private String htmlUrl;
+    public String htmlUrl;
     public User() {
     }
 
