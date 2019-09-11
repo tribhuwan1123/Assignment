@@ -10,10 +10,12 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.assignment.DetailsActivity;
 import com.example.assignment.R;
+import com.example.assignment.databinding.UsersListBinding;
 import com.example.assignment.model.User;
 import com.squareup.picasso.Picasso;
 
@@ -41,16 +43,21 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
     @NonNull
     @Override
     public UserAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.users_list,parent,false);
-        return new ViewHolder(view);
+        UsersListBinding usersListBinding= DataBindingUtil.inflate(
+                LayoutInflater.from(parent.getContext()),R.layout.users_list,parent,false);
+        return new ViewHolder(usersListBinding);
+//        View view= LayoutInflater.from(context).inflate(R.layout.users_list,parent,false);
+//        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserAdapter.ViewHolder holder, int position) {
         User user= userList.get(position);
-        holder.username.setText(user.getLogin());
-        holder.gitLink.setText(user.getHtmlUrl());
-        Picasso.get().load(user.getAvatarUrl()).placeholder(R.mipmap.ic_launcher).into(holder.profileImage);
+        holder.usersListBinding.setUser(user);
+
+//        holder.username.setText(user.getLogin());
+//        holder.gitLink.setText(user.getHtmlUrl());
+//        Picasso.get().load(user.getAvatarUrl()).placeholder(R.mipmap.ic_launcher).into(holder.profileImage);
     }
 
     @Override
@@ -90,24 +97,21 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
         }
     };
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder  {
         CircleImageView profileImage;
         TextView username,gitLink;
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            profileImage=itemView.findViewById(R.id.profileImage);
-            username=itemView.findViewById(R.id.username);
-            gitLink=itemView.findViewById(R.id.gitLink);
-            itemView.setOnClickListener(new View.OnClickListener() {
+        UsersListBinding usersListBinding;
+
+        public ViewHolder(@NonNull UsersListBinding itemView)  {
+            super(itemView.getRoot());
+            usersListBinding=itemView;
+            usersListBinding.details.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position=getAdapterPosition();
                     if (position!=RecyclerView.NO_POSITION){
-                        User clickedUser=userList.get(position);
                         Intent intent= new Intent(context, DetailsActivity.class);
-                        intent.putExtra("login",userList.get(position).getLogin());
-                        intent.putExtra("htmlUrl",userList.get(position).getHtmlUrl());
-                        intent.putExtra("avatarUrl",userList.get(position).getAvatarUrl());
+                        intent.putExtra("id",userList.get(position).getId());
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                         Toast.makeText(view.getContext(), "Clicked ", Toast.LENGTH_SHORT).show();
@@ -115,5 +119,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
                 }
             });
         }
+
+
+
     }
 }

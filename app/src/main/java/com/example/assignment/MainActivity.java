@@ -2,6 +2,7 @@ package com.example.assignment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.assignment.adapter.UserAdapter;
+import com.example.assignment.databinding.ActivityMainBinding;
 import com.example.assignment.model.User;
 import com.example.assignment.routes.RetrofitClient;
 import com.example.assignment.routes.Service;
@@ -30,24 +32,25 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView rvUsers;
-    TextView internet;
+    private ActivityMainBinding mainBinding;
     ProgressDialog progressDialog;
     SwipeRefreshLayout refreshLayout;
     UserAdapter userAdapter;
     Service service;
-    CompositeDisposable compositeDisposable= new CompositeDisposable();
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Retrofit retrofit= RetrofitClient.getInstance();
-        service= retrofit.create(Service.class);
+        // setContentView(R.layout.activity_main);
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        Retrofit retrofit = RetrofitClient.getInstance();
+        service = retrofit.create(Service.class);
         initViews();
 
-        refreshLayout=(SwipeRefreshLayout)findViewById(R.id.refreshLayout);
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
-        internet=(TextView)findViewById(R.id.internet);
         load();
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -58,37 +61,35 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     private void load() {
-       compositeDisposable.add(service.getUsers()
-       .subscribeOn(Schedulers.io())
-       .observeOn(AndroidSchedulers.mainThread())
-       .subscribe(new Consumer<List<User>>() {
-           @Override
-           public void accept(List<User> userList) throws Exception {
-               displayData(userList);
-           }
-       }));
+        compositeDisposable.add(service.getUsers()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<User>>() {
+                    @Override
+                    public void accept(List<User> userList) throws Exception {
+                        displayData(userList);
+                    }
+                }));
     }
 
     private void displayData(List<User> userList) {
-        userAdapter=new UserAdapter(getApplicationContext(), userList);
-                    rvUsers.setAdapter(userAdapter);
-                    rvUsers.smoothScrollToPosition(0);
-                    refreshLayout.setRefreshing(false);
-                    progressDialog.hide();
+        userAdapter = new UserAdapter(getApplicationContext(), userList);
+        mainBinding.rvUsers.setAdapter(userAdapter);
+        mainBinding.rvUsers.smoothScrollToPosition(0);
+        refreshLayout.setRefreshing(false);
+        progressDialog.hide();
     }
 
     private void initViews() {
-        progressDialog= new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Users");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        rvUsers=(RecyclerView)findViewById(R.id.rvUsers);
-        rvUsers.setLayoutManager(new LinearLayoutManager(this));
-        rvUsers.smoothScrollToPosition(0);
+        mainBinding.rvUsers.setLayoutManager(new LinearLayoutManager(this));
+        mainBinding.rvUsers.smoothScrollToPosition(0);
     }
 
     @Override

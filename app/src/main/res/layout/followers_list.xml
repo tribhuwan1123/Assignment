@@ -3,8 +3,8 @@
     <data>
         <import type="android.view.View" />
         <variable
-            name="user"
-            type="com.example.assignment.model.User" />
+            name="followers"
+            type="com.example.assignment.model.Followers" />
 
     </data>
 
@@ -17,6 +17,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
@@ -25,12 +26,12 @@
                 android:textSize="20dp"
                 android:layout_centerInParent="true"
                 android:layout_toRightOf="@+id/profileImage"
-                android:text="@{user.login}" />
+                android:text="@{followers.login}" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profileImage"
-                android:pImage="@{user.avatarUrl}"
+                android:followerImage="@{followers.avatarUrl}"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_margin="5dp"
