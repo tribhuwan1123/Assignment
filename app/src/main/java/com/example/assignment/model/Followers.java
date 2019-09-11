@@ -12,6 +12,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Followers {
 
+    @SerializedName("id")
+    @Expose
+    public String id;
+
     @SerializedName("login")
     @Expose
     public String login;
@@ -25,9 +29,18 @@ public class Followers {
     public Followers() {
     }
 
-    public Followers(String login, String avatarUrl) {
+    public Followers(String login, String avatarUrl,String id) {
         this.login = login;
         this.avatarUrl = avatarUrl;
+        this.id=id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLogin() {

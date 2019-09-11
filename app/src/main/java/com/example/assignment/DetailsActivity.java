@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.util.Linkify;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import com.example.assignment.adapter.UserAdapter;
 import com.example.assignment.adapter.UserDetailsAdapter;
 import com.example.assignment.databinding.ActivityDetailsBinding;
 import com.example.assignment.databinding.UserDetailsBinding;
+import com.example.assignment.model.Followers;
 import com.example.assignment.model.User;
 import com.example.assignment.model.UserDetails;
 import com.example.assignment.routes.RetrofitClient;
@@ -31,8 +33,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
-public class DetailsActivity extends AppCompatActivity {
-    String id;
+public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
+    String id,login;
     Service service;
     ProgressDialog progressDialog;
     ActivityDetailsBinding detailsBinding;
@@ -47,12 +49,13 @@ public class DetailsActivity extends AppCompatActivity {
         userDetailsBinding=DataBindingUtil.setContentView(this,R.layout.user_details);
         Intent details = getIntent();
         id = details.getStringExtra("id");
+        login = details.getStringExtra("login");
         initViews();
         Retrofit retrofit = RetrofitClient.getInstance();
         service = retrofit.create(Service.class);
         load();
-
-
+        userDetailsBinding.followers.setOnClickListener(this);
+        userDetailsBinding.following.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -78,6 +81,7 @@ public class DetailsActivity extends AppCompatActivity {
                 Glide.with(getApplicationContext()).load(userDetails.getAvatarUrl()).into(userDetailsBinding.userImage);
                 Toast.makeText(DetailsActivity.this, id, Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
+
             }
         }));
     }
@@ -88,5 +92,30 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         compositeDisposable.clear();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view==userDetailsBinding.followers){
+            if (Integer.parseInt(userDetailsBinding.followers.getText().toString())==0){
+                Toast.makeText(this, "No Followers to Display", Toast.LENGTH_SHORT).show();
+            }else{
+                Intent intent= new Intent(DetailsActivity.this, FollowersActivity.class);
+                intent.putExtra("login",login);
+                startActivity(intent);
+            }
+
+        }
+        if (view==userDetailsBinding.following){
+            if (Integer.parseInt(userDetailsBinding.following.getText().toString())==0){
+                Toast.makeText(this, "No Following to Display", Toast.LENGTH_SHORT).show();
+            }else{
+                Intent intent= new Intent(DetailsActivity.this, FollowingActivity.class);
+                intent.putExtra("login",login);
+                startActivity(intent);
+            }
+
+        }
+
     }
 }
