@@ -34,7 +34,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
-    String id,login;
+    String id, login;
     Service service;
     ProgressDialog progressDialog;
     ActivityDetailsBinding detailsBinding;
@@ -46,7 +46,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         detailsBinding = DataBindingUtil.setContentView(this, R.layout.activity_details);
-        userDetailsBinding=DataBindingUtil.setContentView(this,R.layout.user_details);
+        userDetailsBinding = DataBindingUtil.setContentView(this, R.layout.user_details);
         Intent details = getIntent();
         id = details.getStringExtra("id");
         login = details.getStringExtra("login");
@@ -67,25 +67,38 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     private void load() {
         compositeDisposable.add(service.getUserDetail(Integer.parseInt(id))
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<UserDetails>() {
-            @Override
-            public void accept(UserDetails userDetails) throws Exception {
-                userDetailsBinding.name.setText(userDetails.getName());
-                userDetailsBinding.location.setText(userDetails.getLocation());
-                userDetailsBinding.company.setText(userDetails.getCompany());
-                userDetailsBinding.followers.setText(userDetails.getFollowers());
-                userDetailsBinding.following.setText(userDetails.getFollowing());
-                userDetailsBinding.publicRepos.setText(userDetails.getPublic_repos());
-                Glide.with(getApplicationContext()).load(userDetails.getAvatarUrl()).into(userDetailsBinding.userImage);
-                Toast.makeText(DetailsActivity.this, id, Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<UserDetails>() {
+                    @Override
+                    public void accept(UserDetails userDetails) throws Exception {
 
-            }
-        }));
+                        if (userDetails.getName() == null) {
+                            userDetailsBinding.name.setText("No name provided");
+                        } else {
+                            userDetailsBinding.name.setText(userDetails.getName());
+                        }
+                        if (userDetails.getCompany() == null) {
+                            userDetailsBinding.company.setText("No company provided");
+                        } else {
+                            userDetailsBinding.company.setText(userDetails.getCompany());
+                        }
+
+                        if (userDetails.getLocation() == null) {
+                            userDetailsBinding.name.setText("No location provided");
+                        } else {
+                            userDetailsBinding.location.setText(userDetails.getLocation());
+                        }
+                        userDetailsBinding.followers.setText(userDetails.getFollowers());
+                        userDetailsBinding.following.setText(userDetails.getFollowing());
+                        userDetailsBinding.publicRepos.setText(userDetails.getPublic_repos());
+                        Glide.with(getApplicationContext()).load(userDetails.getAvatarUrl()).into(userDetailsBinding.userImage);
+                        Toast.makeText(DetailsActivity.this, id, Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+
+                    }
+                }));
     }
-
 
 
     @Override
@@ -96,22 +109,22 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (view==userDetailsBinding.followers){
-            if (Integer.parseInt(userDetailsBinding.followers.getText().toString())==0){
+        if (view == userDetailsBinding.followers) {
+            if (Integer.parseInt(userDetailsBinding.followers.getText().toString()) == 0) {
                 Toast.makeText(this, "No Followers to Display", Toast.LENGTH_SHORT).show();
-            }else{
-                Intent intent= new Intent(DetailsActivity.this, FollowersActivity.class);
-                intent.putExtra("login",login);
+            } else {
+                Intent intent = new Intent(DetailsActivity.this, FollowersActivity.class);
+                intent.putExtra("login", login);
                 startActivity(intent);
             }
 
         }
-        if (view==userDetailsBinding.following){
-            if (Integer.parseInt(userDetailsBinding.following.getText().toString())==0){
+        if (view == userDetailsBinding.following) {
+            if (Integer.parseInt(userDetailsBinding.following.getText().toString()) == 0) {
                 Toast.makeText(this, "No Following to Display", Toast.LENGTH_SHORT).show();
-            }else{
-                Intent intent= new Intent(DetailsActivity.this, FollowingActivity.class);
-                intent.putExtra("login",login);
+            } else {
+                Intent intent = new Intent(DetailsActivity.this, FollowingActivity.class);
+                intent.putExtra("login", login);
                 startActivity(intent);
             }
 
